@@ -1,0 +1,12 @@
+validators==0.20.0
+urllib3==1.26.16
+oauthlib==3.2.2
+openpyxl==3.1.2
+extra-streamlit-components==0.1.56
+streamlit==1.25.0
+streamlit-authenticator==0.2.2
+PyJWT==2.8.0
+pymongo==4.4.1
+pandas==2.0.3
+python-dateutil==2.8.2
+PyYAML==6.0.1
