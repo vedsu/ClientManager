@@ -67,8 +67,10 @@ def hardbounce():
                                     st.error("record could not be inserted successfully")
                             
                             time.sleep(1)
+            
         
                             st.experimental_rerun()
+            
                             
 
                             # Perform the deletion or processing here
@@ -80,23 +82,52 @@ def hardbounce():
                     if uploaded_file:
                         df = pd.read_csv(uploaded_file)
                         st.write(df)
-                        if st.button("Update" , key = "update_button"):# Insert CSV data into the database
+                        # Insert CSV data into the database
+                        if st.button("Update" , key = "update_button"):
                             st.warning("uploading files to hardbounce, please wait")
+                            # Create a set to store seen email addresses
+                            seen_emails = set()
+                            # Populate the set with existing email addresses from the collection
+                            existing_emails = Vedsu_HardBounce.distinct("Email")
+                            seen_emails.update(existing_emails)
+                            st.write(len(seen_emails))
+                            
+                            # Prepare a list to store data to insert
+                            data_to_insert = []
+
+                            # Iterate through DataFrame rows
+                            
                             for index, row in df.iterrows():
-                                existing_document = Vedsu_HardBounce.find_one({"Email": row["Email"]})
-                                if existing_document is None:
-                                    data_to_insert = {
-                            "Email": row["Email"],
-                            "Bounce_Reason": row["Bounce_Reason"],
-                            "Bounce_Description": row["Bounce_Description"]}
-                                # Insert data into the desired collection
-                                    try:
-                                        Vedsu_HardBounce.insert_one(data_to_insert)
-                                    except:
-                                        st.error("please check the csv file again")
+                                email = row["Email"]
+                                # If the email is already in the set, skip it
+                                if email in seen_emails:
+                                        
+                                        # st.warning(f"Duplicate email '{email}' skipped.")
+                                        continue
 
-                            st.success("Uploaded successfully")
+                                # If email is not in the set, add it to the seen_emails set
+                                seen_emails.add(email)
+                                 # Check if "Bounce_Reason" and "Bounce_Description" columns exist in the row
+                                if "Bounce_Reason" in row and "Bounce_Description" in row:
+                                    bounce_reason = row["Bounce_Reason"]
+                                    bounce_description = row["Bounce_Description"]
+                                else:
+                                    bounce_reason = ""
+                                    bounce_description = ""
 
+                                # Append data to the list for bulk insertion
+                                data_to_insert.append({
+                                "Email": email,
+                                "Bounce_Reason": bounce_reason,
+                                "Bounce_Description": bounce_description
+                                })
+                            # Insert data into the desired collection using insert_many
+                            # try:
+                            st.success(f"Inserted {len(data_to_insert)} emails successfully.")
+                            Vedsu_HardBounce.insert_many(data_to_insert)
+                            # except:
+                            st.error("Error inserting data, try again")
+                        
                             time.sleep(1)
                             st.experimental_rerun()  # Refresh the app
 def unsubscribe():
@@ -145,21 +176,48 @@ def unsubscribe():
                         st.write(df)
                         if st.button("Update" , key="update_unsubscribe"):# Insert CSV data into the database
                             st.warning("uploading files to Unsubscribe, please wait")
+                            # Create a set to store seen email addresses
+                            seen_emails = set()
+                            # Populate the set with existing email addresses from the collection
+                            existing_emails = Vedsu_HardBounce.distinct("Email")
+                            seen_emails.update(existing_emails)
+                            
+                            # Prepare a list to store data to insert
+                            data_to_insert = []
+
+                            # Iterate through DataFrame rows
+                            
                             for index, row in df.iterrows():
-                                existing_document = Vedsu_Unsubscribe.find_one({"Email": row["Email"]})
-                                if existing_document is None:
-                                    data_to_insert = {
-                            "Email": row["Email"],
-                            "UnsubscribeBrand": row["UnsubscribeBrand"],
-                            "Reason": row["Reason"],
-                            "CreateDate": row["CreateDate"]}
-                                # Insert data into the desired collection
-                                    try:
-                                        Vedsu_Unsubscribe.insert_one(data_to_insert)
-                                    except:
-                                        st.error("please check the csv file again")
+                                email = row["Email"]
+                                # If the email is already in the set, skip it
+                                if email in seen_emails:
+                                        
+                                        # st.warning(f"Duplicate email '{email}' skipped.")
+                                        continue
 
-                            st.success("Uploaded successfully")
+                                # If email is not in the set, add it to the seen_emails set
+                                seen_emails.add(email)
+                                 # Check if "Bounce_Reason" and "Bounce_Description" columns exist in the row
+                                if "Bounce_Reason" in row and "Bounce_Description" in row:
+                                    bounce_reason = row["Bounce_Reason"]
+                                    bounce_description = row["Bounce_Description"]
+                                else:
+                                    bounce_reason = ""
+                                    bounce_description = ""
 
+                                # Append data to the list for bulk insertion
+                                data_to_insert.append({
+                                "Email": email,
+                                "Bounce_Reason": bounce_reason,
+                                "Bounce_Description": bounce_description
+                                })
+                            # Insert data into the desired collection using insert_many
+                            try:
+                                Vedsu_HardBounce.insert_many(data_to_insert)
+                                st.success(f"Inserted {len(data_to_insert)} emails successfully.")
+                            except:
+                                st.error("Error inserting data, try again")
+                        
                             time.sleep(1)
                             st.experimental_rerun()  # Refresh the app
+                            

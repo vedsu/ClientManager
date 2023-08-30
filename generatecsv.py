@@ -50,7 +50,23 @@ Insurance_archieves= db['Insurance_archieves']
 
 Pharmaceutical = db['Pharmaceutical']
 Pharmaceutical_archieves = db['Pharmaceutical_archieves']
+# Collections to exclude from the dropdown
+collections_to_exclude = ["Account","Account_archieves", "Banking&Finance_archieves",  "Banking&Finance","Finance","Finance_archieves", "FoodSafety","FoodSafety_archieves",
+                         "Healthcare", "Healthcare_archieves","HumanResource", "HumanResource_archieves","Insurance","Insurance_archieves",  "Pharmaceutical","Pharmaceutical_archieves", "Vedsu_Unsubscribe"]
+existing_collections = db.list_collection_names()
+filtered_collections = [col for col in existing_collections if col not in collections_to_exclude]
 
+@st.cache_resource
+def unique_email():
+    distinct_email=[]
+    for hardbounce in filtered_collections:
+        inusehardbounce = db[hardbounce]
+        existing_emails = inusehardbounce.distinct("Email")
+        distinct_email.append(existing_emails)
+    return distinct_email
+
+
+    
 
 
 def main():
@@ -104,20 +120,29 @@ def main():
     "_id": 0  # Exclude the default _id field
 }
     if generate_button:
+        st.warning("generating excel please wait...")
         # Calculate the date range for the last 7 days
-        end_date = datetime.now()  # Current date and time
-        start_date = end_date - timedelta(days=10)  # 7 days ago
+        # end_date = datetime.now()  # Current date and time
+        # start_date = end_date - timedelta(days=10)  # 7 days ago
 
         # Query to retrieve documents within the last 7 days
-        query = {"Date": {
-        "$gte": start_date.strftime('%Y-%m-%d %H:%M:%S'),
-        "$lt": end_date.strftime('%Y-%m-%d %H:%M:%S')}
-        }
+        # query = {"Date": {
+        # "$gte": start_date.strftime('%Y-%m-%d %H:%M:%S'),
+        # "$lt": end_date.strftime('%Y-%m-%d %H:%M:%S')}
+        # }
         # Fetch documents using the query
 
-        results = collection.find(query, projection)
+        results = collection.find({}, projection)
         # Create a DataFrame from the query results
         df = pd.DataFrame(results)
+         # Delete emails from collection if present in hardbounce
+        #existing_emails = Vedsu_HardBounce.distinct("Email")
+        existing_emails = unique_email()
+        for result in results:
+            if result["Email"] in existing_emails:
+                collection.delete_one({"Email": result["Email"]})
+                # st.warning(f"Email '{email}' deleted from collection due to being in hardbounce.")
+                collection_archieves.insert_one(result)
         st.write(df)
 
         # Save DataFrame to a CSV file
