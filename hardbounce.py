@@ -96,7 +96,7 @@ def main():
                             # Populate the set with existing email addresses from the collection
                             existing_emails = selected_collection.distinct("Email")
                             seen_emails.update(existing_emails)
-                            st.write("Existing Emails : ", len(seen_emails))
+                            st.write("Existing Emails:", len(seen_emails))
                             
                             # Prepare a list to store data to insert
                             data_to_insert = []

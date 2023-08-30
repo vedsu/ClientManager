@@ -50,6 +50,8 @@ Insurance_archieves= db['Insurance_archieves']
 
 Pharmaceutical = db['Pharmaceutical']
 Pharmaceutical_archieves = db['Pharmaceutical_archieves']
+
+Vedsu_Unsubscribe = db['Vedsu_Unsubscribe']
 # Collections to exclude from the dropdown
 collections_to_exclude = ["Account","Account_archieves", "Banking&Finance_archieves",  "Banking&Finance","Finance","Finance_archieves", "FoodSafety","FoodSafety_archieves",
                          "Healthcare", "Healthcare_archieves","HumanResource", "HumanResource_archieves","Insurance","Insurance_archieves",  "Pharmaceutical","Pharmaceutical_archieves", "Vedsu_Unsubscribe"]
@@ -59,10 +61,14 @@ filtered_collections = [col for col in existing_collections if col not in collec
 @st.cache_resource
 def unique_email():
     distinct_email=[]
+    #storing emails from harbounce collections
     for hardbounce in filtered_collections:
         inusehardbounce = db[hardbounce]
-        existing_emails = inusehardbounce.distinct("Email")
-        distinct_email.append(existing_emails)
+        hardbounce_emails = inusehardbounce.distinct("Email")
+        distinct_email.append(hardbounce_emails)
+    
+    unsubscribe_emails = Vedsu_Unsubscribe.distinct("Email")
+    distinct_email.append(unsubscribe_emails)
     return distinct_email
 
 

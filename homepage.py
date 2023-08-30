@@ -56,10 +56,10 @@ Pharmaceutical_archieves = db['Pharmaceutical_archieves']
 def main():
         # Radio buttons to navigate between pages
     st.sidebar.subheader("Instruction to use")
-    st.sidebar.text("1. Go to Update Client Data select the department and upload their respective CSV file.")
-    st.sidebar.text("2. Go to Update Hardbounce/Unsubscribe select the option & upload CSV their file. ")
-    st.sidebar.text("3. Go to Delete Client data & directly upload CSV harbounce, unsubscribe file. ")
-    st.sidebar.text("4. Generate CSV file and Download the updated CSV file. ")
+    st.sidebar.text("1. Go to Update Client Data select the industry and upload their CSV file.")
+    st.sidebar.text("2. Go to Update Hardbounce upload their CSV file. ")
+    st.sidebar.text("3. Go to Update Unsubscribe upload their CSV file. ")
+    st.sidebar.text("4. Generate CSV file select the industry and Download the updated CSV file. ")
     st.sidebar.write("----------------------------------")
 
     
@@ -113,12 +113,7 @@ def main():
                         
         #                 elif selected_option == "Pharmaceutical":
         #                     collection = Pharmaceutical
-        #                     collection_archieves = Pharmaceutical_archieves
-                        
-                            
-                            
-                            
-                            
+        #                     collection_archieves = Pharmaceutical_archieves                    
         #                 st.write(f"You selected: {selected_option}")
         #                 # Delete button
         #                 if st.button("Delete") and selected_option != "Select":
