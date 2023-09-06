@@ -104,7 +104,7 @@ def main():
                 active_color="#11567f", 
                 track_color="#29B5E8"
                 )
-    
+    jobtitle=None
     if tog_value==True:
         
         jobtitle = st.text_input("Enter JobTitle:", value="")
