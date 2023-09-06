@@ -87,11 +87,15 @@ def unique_email():
 
     # Storing emails from hardbounce collections
     for hardbounce in filtered_collections:
+        
         inusehardbounce = db[hardbounce]
+        
         hardbounce_emails = inusehardbounce.distinct("Email")
+        
         distinct_email.extend(hardbounce_emails)  # Extend the list with emails from this collection
     
     unsubscribe_emails = Vedsu_Unsubscribe.distinct("Email")
+    
     distinct_email.extend(unsubscribe_emails)  # Extend the list with unsubscribe emails
     
     return distinct_email
@@ -194,7 +198,9 @@ def main():
     if selected_option != "Select":
          # Allow user to input the start document index (which is a multiple of 100000)
         total_documents = collection.count_documents({})
+        
         options = ["1 lac", "2 lac", "5 lac"]
+        
         file_size = st.selectbox("Select file size", options, key="file_size_select")
         if file_size =="1 lac":
             batch=100000
@@ -264,19 +270,21 @@ def main():
             df = pd.DataFrame(archived_documents)
             
             # Select specific columns from archived_df to create df2 (projection)
-            selected_columns = ["Date", "Email", "JobTitle", "Department", "Industry"]
+            selected_columns = ["Date", "Email", "JobTitle", 'Status',"Department", "Industry"]
             
             df2 = df[selected_columns]
             
             st.dataframe(df2)
-
-            csv_filename = 'query_results.csv'
-
-            df.to_csv(csv_filename, index=False)
-
-            # Provide a link to download the CSV file
-            # After generating the CSV file, provide a download link
-            st.markdown(f"Download [query_results.csv](./{csv_filename})", unsafe_allow_html=True)
+            
+        
+            csv_content= df2.to_csv(index=False)
+            st.download_button(
+                        label="Download CSV",
+                        data=csv_content,
+                        file_name="query_results.csv",
+                        mime="text/csv")
+       
+        
         
 
 
