@@ -1,11 +1,17 @@
 import streamlit as st
+
 st.set_page_config(page_title="Vedsu Technology", page_icon="📧")
+
 import yaml
 from yaml.loader import SafeLoader
 from streamlit_authenticator import Authenticate 
 import homepage
+
+
 st.header("Client Manager")
+
 with st.container():
+
 # Load configuration from YAML file
     with open('./config.yaml') as file:
         config = yaml.load(file, Loader=SafeLoader)
@@ -20,8 +26,11 @@ with st.container():
     )
 
     col1, col2 = st.columns(2)
+
     name, authentication_status, username = authenticator.login('Login', 'main')
+
     if authentication_status:
+
         with col1:
             authenticator.logout('Logout', 'main')
             
@@ -31,7 +40,10 @@ with st.container():
         homepage.main()
 
     elif authentication_status == False:
+
         st.error('Username/password is incorrect')
+
     elif authentication_status == None:
+
         st.warning('Please enter your username and password')
 
