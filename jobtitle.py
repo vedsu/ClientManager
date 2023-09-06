@@ -160,7 +160,7 @@ def main():
         
                     # Append data to the list for bulk insertion
                     data_to_insert.append({
-                            "JobTitles": jobtitle 
+                            "JobTitle": jobtitle 
                             })
         
                 # Insert data into the desired collection using insert_many
